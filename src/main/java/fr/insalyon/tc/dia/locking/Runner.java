@@ -1,18 +1,48 @@
 package fr.insalyon.tc.dia.locking;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.*;
 
 public class Runner {
 
-    private static final int THREAD_COUNT = 4;
-    private static final int JOB_COUNT = 5000000;
-    private static final int STORE_SIZE = 20;
-    private final ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
-    private final LinkedList<Callable<Void>> jobs = new LinkedList<>();
+    private int threadCount = 4;
+    private int jobsCount = 5000000;
+    private int storeSize = 20;
+    private ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+    private LinkedList<Callable<Void>> jobs = new LinkedList<>();
+    private HashMap<String, Long> execTime = new HashMap<>(3);
+
+    public Runner(int threads, int jobs, int size){
+        this.threadCount = threads;
+        this.jobsCount = jobs;
+        this.storeSize = size;
+        this.executor  = Executors.newFixedThreadPool(threadCount);
+        this.jobs = new LinkedList<>();
+    }
+
+    public HashMap<String, Long> getExecutionTimes(){
+        return execTime;
+    }
+
+    public void run(){
+        try {
+            for (int i = 0; i < 5; i++) {
+                bench(new HippieStore(storeSize));
+            }
+            for (int i = 0; i < 5; i++) {
+                bench(new PessimisticStore(storeSize));
+            }
+            for (int i = 0; i < 5; i++) {
+                bench(new OptimisticStore(storeSize));
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 
     private void bench(final Store store) throws InterruptedException, ExecutionException {
-        for (int i = 0; i < JOB_COUNT; i++) {
+        for (int i = 0; i < jobsCount; i++) {
             final boolean adding = i % 2 == 0;
             jobs.add(() -> {
                 for (int j = 0; j < store.size(); j++) {
@@ -33,25 +63,14 @@ public class Runner {
         }
         long stop = System.currentTimeMillis();
         jobs.clear();
-        System.out.println(store.name() + ": " + (stop - start) + "ms");
-        for (int i = 0; i < store.size(); i++) {
-            System.out.print(store.at(i) + " ");
-        }
-        System.out.println();
+
+        execTime.put(store.name(), stop-start);
+
         System.gc();
     }
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        Runner runner = new Runner();
-        for (int i = 0; i < 5; i++) {
-            runner.bench(new HippieStore(STORE_SIZE));
-        }
-        for (int i = 0; i < 5; i++) {
-            runner.bench(new PessimisticStore(STORE_SIZE));
-        }
-        for (int i = 0; i < 5; i++) {
-            runner.bench(new OptimisticStore(STORE_SIZE));
-        }
+        new Runner(4,5000000, 20).run();
         System.exit(0);
     }
 }

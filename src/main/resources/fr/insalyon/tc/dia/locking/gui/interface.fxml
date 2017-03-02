@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<BorderPane fx:controller="fr.insalyon.tc.dia.locking.gui.Interface" maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <center>
+        <BarChart fx:id="plot" prefHeight="400.0" prefWidth="378.0" BorderPane.alignment="CENTER">
+            <xAxis>
+                <CategoryAxis side="BOTTOM"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis side="LEFT"/>
+            </yAxis>
+        </BarChart>
+    </center>
+    <right>
+        <VBox prefHeight="400.0" prefWidth="239.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="Nombre de Threads"/>
+                <Slider fx:id="threadsCount" majorTickUnit="5.0" max="20.0" minorTickCount="1" showTickLabels="true"
+                        showTickMarks="true" value="4.0"/>
+                <Label text="Taille des listes"/>
+                <Slider fx:id="storeSize" showTickLabels="true" showTickMarks="true" value="20.0"/>
+                <Label text="Nombre d'opérations (x10 000)"/>
+                <Slider fx:id="jobCount" blockIncrement="100.0" majorTickUnit="10.0" max="50.0" minorTickCount="5"
+                        showTickLabels="true" showTickMarks="true" value="20.0"/>
+                <Button fx:id="runButton" mnemonicParsing="false" onAction="#launchBenchmark" prefHeight="27.0" prefWidth="241.0"
+                        text="Lancer le benchmark" textAlignment="CENTER" VBox.vgrow="ALWAYS"/>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+        </VBox>
+    </right>
+</BorderPane>
