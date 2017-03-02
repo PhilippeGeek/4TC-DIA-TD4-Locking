@@ -43,8 +43,12 @@ public class Runner {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         Runner runner = new Runner();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             runner.bench(new HippieStore(STORE_SIZE));
         }
+        for (int i = 0; i < 5; i++) {
+            runner.bench(new PessimisticStore(STORE_SIZE));
+        }
+        System.exit(0);
     }
 }
